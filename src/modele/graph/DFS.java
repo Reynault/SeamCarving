@@ -1,3 +1,5 @@
+package modele.graph;
+
 import java.util.Stack;
 
 class DFS

@@ -1,6 +1,8 @@
+package modele.graph;
+
 import java.util.ArrayList;
 
-class GraphImplicit extends Graph{
+class GraphImplicit extends Graph {
     int N;
     
 @SuppressWarnings("unchecked")    

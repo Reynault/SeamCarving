@@ -1,5 +1,6 @@
+package modele.graph;
+
 import java.util.ArrayList;
-import java.io.*;
 
 public class GraphArrayList extends Graph
 {

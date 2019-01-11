@@ -1,3 +1,9 @@
+package modele.graph;
+
+import modele.graph.Edge;
+import modele.graph.Graph;
+import modele.graph.GraphArrayList;
+
 class Test
 {
    static boolean visite[];
