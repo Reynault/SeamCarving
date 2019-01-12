@@ -1,21 +1,25 @@
 package modele.graph;
 
-import modele.graph.Edge;
-import modele.graph.Graph;
-import modele.graph.GraphArrayList;
+import java.util.ArrayList;
 
-class Test
+public class Test
 {
    static boolean visite[];
-   public static void dfs(Graph g, int u)
+   public static void dfs(Graph g, int u, ArrayList<Edge> topo)
 	 {
 		visite[u] = true;
 		System.out.println("Je visite " + u);
 		for (Edge e: g.next(u))
-		  if (!visite[e.to])
-			dfs(g,e.to);
+		  if (!visite[e.to]) {
+			  dfs(g, e.to, topo);
+			  topo.add(0,e);
+		  }
 	 }
-   
+
+	public static void initialiserVisite(int taille){
+   		visite = new boolean[taille];
+	}
+
    public static void testGraph()
 	 {
 		int n = 5;
@@ -36,7 +40,9 @@ class Test
 		g.writeFile("test.dot");
 		// dfs à partir du sommet 3
 		visite = new boolean[n*n+2];
-		dfs(g, 3);
+
+		ArrayList<Edge> fin = new ArrayList<Edge>();
+		dfs(g, 3, fin);
 	 }
    
    public static void main(String[] args)
