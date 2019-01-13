@@ -4,6 +4,7 @@ import modele.graph.Graph;
 import modele.graph.GraphArrayList;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Classe principale de test
@@ -50,7 +51,7 @@ public class Principale {
         int[][] interet = SeamCarving.interest(image);
         // Création du graphe et affichage dans un fichier
         Graph g = SeamCarving.tograph(interet);
-        g.writeFile("graphe");
+        g.writeFile("graphe.dot");
     }
 
     /**
@@ -64,8 +65,24 @@ public class Principale {
         int[][] itr = SeamCarving.interest(image);
         Graph g = SeamCarving.tograph(itr);
         // Tri topologique et affichage des sommets dans le sens inverse de l'ordre suffixe
-        ArrayList<Edge> topo = SeamCarving.tritopo(g);
-        for(Edge e : topo){
+        ArrayList<Integer> topo = SeamCarving.tritopo(g);
+        for(Integer e : topo){
+            System.out.println(e);
+        }
+    }
+
+    /**
+     * Méthode de test de la méthode bellman
+     */
+    public static void test_bellman(){
+        // Récupération du tri topo
+        int[][] image = SeamCarving.readpgm("test.pgm");
+        int[][] itr = SeamCarving.interest(image);
+        Graph g = SeamCarving.tograph(itr);
+        ArrayList<Integer> topo = SeamCarving.tritopo(g);
+        // Algo Bellman
+        ArrayList<Integer> res = SeamCarving.bellman(g,0,g.vertices()-1,topo);
+        for(Integer e : res){
             System.out.println(e);
         }
     }
@@ -75,9 +92,14 @@ public class Principale {
      * @param args
      */
     public static void main(String[] args){
-        test_writepgm();
-        test_interest();
-        test_tograph();
-        test_tritopo();
+        // On demande à l'utilisateur le nom de l'image de base
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Quelle image souhaitez-vous choisir ?");
+        String image = sc.nextLine();
+        int[][] img = SeamCarving.readpgm(image);
+        int[][] itr = SeamCarving.interest(img);
+        Graph g = SeamCarving.tograph(itr);
+        ArrayList<Integer> topo = SeamCarving.tritopo(g);
+        ArrayList<Integer> ccm = SeamCarving.bellman(g,0,g.vertices()-1,topo);
     }
 }

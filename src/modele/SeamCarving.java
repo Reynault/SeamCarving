@@ -88,8 +88,8 @@ public class SeamCarving
     /**
      * Méthode interest qui permet de récupérer le tableau contenant les intérêts des pixels de l'image en fonction des
      * voisins.
-     * @param image
-     * @return
+     * @param image tableau des valeurs des pixels de l'image
+     * @return tableau contenant les facteurs d'intérêt
      */
    public static int[][] interest(int[][] image){
        // Récupération de la hauteur et de la largeur
@@ -168,15 +168,17 @@ public class SeamCarving
     /**
      * Tri topologique, on utilise la méthode de la classe Test, avec un paramètre supplémentaire qui
      * récupère les sommets dans l'ordre inverse de l'ordre suffixe
-     * @param g
-     * @return
+     * @param g le graphe dont on veut trouver un tri topologique
+     * @return une liste contenant les arêtes qui forment le tri topologique
      */
-   public static ArrayList<Edge> tritopo(Graph g){
+   public static ArrayList<Integer> tritopo(Graph g){
        // Initialisation de la liste des sommets, et du tableau de booléen utilisé par la fonction dfs
-       ArrayList<Edge> topo = new ArrayList<Edge>();
+       ArrayList<Integer> topo = new ArrayList<Integer>();
        Test.initialiserVisite(g.vertices());
        // Lancement du parcours en profondeur
        Test.dfs(g,0,topo);
+       // On ajoute ensuite le sommet de départ
+       topo.add(0,0);
        return topo;
    }
 
@@ -186,11 +188,53 @@ public class SeamCarving
      * @param g graphe dans lequel trouver le CCM
      * @param s sommet de début
      * @param t sommet de fin
-     * @param order tri topologique
+     * @param order tri topologique (liste des sommets dans l'ordre)
      * @return le CCM
      */
-   public static ArrayList<Edge> bellman(Graph g, int s, int t, ArrayList<Edge> order){
-
-       return null;
+   public static ArrayList<Integer> bellman(Graph g, int s, int t, ArrayList<Integer> order){
+       ArrayList<Integer> res = new ArrayList<Integer>();
+       // Initialisation du tableau qui va contenir les valeurs
+       int [] T = new int[g.vertices()];
+       // On commence par donner les valeurs des CCM pour chaque sommet dans le sens du tri topologique
+       int min;
+       int value;
+       Iterator<Edge> i;
+       Edge next;
+       for(Integer vertices : order){
+            min = 0;
+            i = g.prev(vertices).iterator();
+            if(i.hasNext()){
+                next = i.next();
+                min = T[next.getFrom()] + next.getCost();
+                while(i.hasNext()){
+                    next = i.next();
+                    value = T[next.getFrom()] + next.getCost();
+                    if(value < min){
+                        min = value;
+                    }
+                }
+            }
+            T[vertices] = min;
+       }
+       // On récupère ensuite les sommets du CCM entre s et t
+       res.add(t);
+       while(t != s){
+           i = g.prev(t).iterator();
+           if(i.hasNext()){
+               next = i.next();
+               t = next.getFrom();
+               min = T[next.getFrom()]+ next.getCost();
+               while (i.hasNext()){
+                   next = i.next();
+                   value = T[next.getFrom()]+next.getCost();
+                   if(value < min){
+                       min = value;
+                       t = next.getFrom();
+                   }
+               }
+           }
+           res.add(0,t);
+       }
+       return res;
    }
 }

@@ -5,14 +5,14 @@ import java.util.ArrayList;
 public class Test
 {
    static boolean visite[];
-   public static void dfs(Graph g, int u, ArrayList<Edge> topo)
+   public static void dfs(Graph g, int u, ArrayList<Integer> topo)
 	 {
 		visite[u] = true;
-		System.out.println("Je visite " + u);
+		//System.out.println("Je visite " + u);
 		for (Edge e: g.next(u))
 		  if (!visite[e.to]) {
 			  dfs(g, e.to, topo);
-			  topo.add(0,e);
+			  topo.add(0,e.to);
 		  }
 	 }
 
@@ -41,7 +41,7 @@ public class Test
 		// dfs à partir du sommet 3
 		visite = new boolean[n*n+2];
 
-		ArrayList<Edge> fin = new ArrayList<Edge>();
+		ArrayList<Integer> fin = new ArrayList<Integer>();
 		dfs(g, 3, fin);
 	 }
    
