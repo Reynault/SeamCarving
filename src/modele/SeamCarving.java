@@ -6,15 +6,17 @@ import modele.graph.GraphArrayList;
 import modele.graph.Test;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Scanner;
+
 public class SeamCarving
 {
 
    public static int[][] readpgm(String fn)
 	 {
         try {
-            InputStream f = ClassLoader.getSystemClassLoader().getResourceAsStream(fn);
+            InputStream f = ClassLoader.getSystemClassLoader().getResourceAsStream(String.format(fn));
             BufferedReader d = new BufferedReader(new InputStreamReader(f));
             String magic = d.readLine();
             String line = d.readLine();
@@ -35,9 +37,7 @@ public class SeamCarving
 			  count++;
 		   }
 		   return im;
-        }
-
-        catch(Throwable t) {
+        }catch(Throwable t) {
             t.printStackTrace(System.err) ;
             return null;
         }

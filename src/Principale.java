@@ -1,7 +1,5 @@
 import modele.SeamCarving;
-import modele.graph.Edge;
 import modele.graph.Graph;
-import modele.graph.GraphArrayList;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -16,7 +14,7 @@ public class Principale {
      */
     public static void test_writepgm(){
         // Lecture de l'image de test
-        int[][] image = SeamCarving.readpgm("test.pgm");
+        int[][] image = SeamCarving.readpgm("assets/test.pgm");
         // Écriture de l'image
         SeamCarving.writepgm(image,"test2.pgm");
     }
@@ -26,7 +24,7 @@ public class Principale {
      */
     public static void test_interest(){
         // Récupération du tableau d'intérêts
-        int[][] image = SeamCarving.readpgm("test.pgm");
+        int[][] image = SeamCarving.readpgm("assets/test.pgm");
         int[][] interet = SeamCarving.interest(image);
         int hauteur = interet.length;
         if(hauteur > 0) {
@@ -47,7 +45,7 @@ public class Principale {
      */
     public static void test_tograph(){
         // Récupération du tableau d'intérêts
-        int[][] image = SeamCarving.readpgm("test.pgm");
+        int[][] image = SeamCarving.readpgm("assets/test.pgm");
         int[][] interet = SeamCarving.interest(image);
         // Création du graphe et affichage dans un fichier
         Graph g = SeamCarving.tograph(interet);
@@ -61,7 +59,7 @@ public class Principale {
      */
     public static void test_tritopo(){
         // Récupération du graphe
-        int[][] image = SeamCarving.readpgm("test.pgm");
+        int[][] image = SeamCarving.readpgm("assets/test.pgm");
         int[][] itr = SeamCarving.interest(image);
         Graph g = SeamCarving.tograph(itr);
         // Tri topologique et affichage des sommets dans le sens inverse de l'ordre suffixe
@@ -76,7 +74,7 @@ public class Principale {
      */
     public static void test_bellman(){
         // Récupération du tri topo
-        int[][] image = SeamCarving.readpgm("test.pgm");
+        int[][] image = SeamCarving.readpgm("assets/test.pgm");
         int[][] itr = SeamCarving.interest(image);
         Graph g = SeamCarving.tograph(itr);
         ArrayList<Integer> topo = SeamCarving.tritopo(g);
@@ -101,5 +99,8 @@ public class Principale {
         Graph g = SeamCarving.tograph(itr);
         ArrayList<Integer> topo = SeamCarving.tritopo(g);
         ArrayList<Integer> ccm = SeamCarving.bellman(g,0,g.vertices()-1,topo);
+        for(Integer i : ccm){
+            System.out.println(i);
+        }
     }
 }
