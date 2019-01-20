@@ -35,6 +35,8 @@ public class SeamCarving
 			  im[count / width][count % width] = s.nextInt();
 			  count++;
 		   }
+		   d.close();
+		   f.close();
 		   return im;
         }catch (NullPointerException e){
             return null;
@@ -178,7 +180,9 @@ public class SeamCarving
        Test.initialiserVisite(g.vertices());
        // Lancement du parcours en profondeur
        Test.dfs(g,0,topo);
+       // Ajout du premier sommet
        topo.add(0);
+       // On prend l'ordre inverse de l'ordre suffixe
        Collections.reverse(topo);
        return topo;
    }
@@ -251,5 +255,39 @@ public class SeamCarving
            res.add(0,t);
        }
        return res;
+   }
+
+    /**
+     * Méthode qui permet de récupérer la nouvelle image en enlevant une colonne.
+     *
+     * Les sommets enlevés sont ceux qui se trouvent dans le ccm.
+     * @param img l'image cible
+     * @param ccm le chemin de coût minimal issu de l'algorithme de bellman
+     * @return la nouvelle image avec une colonne en moins
+     */
+   public static int[][] recup_nouvelleImage(int[][] img, ArrayList<Integer> ccm){
+       int nbSommet = 1;
+       int hauteur = img.length;
+       int largeur = img[0].length;
+       int[][] nouvelleImg = new int[hauteur][largeur - 1];
+       int decalage = 0;
+       // Pour chaque pixel de la première image
+       for (int i = 0; i < hauteur; i++) {
+           for (int j = 0; j < largeur; j++) {
+               // On regarde si le numéro du sommet est contenu dans le CCM
+               if (!ccm.contains(nbSommet)) {
+                   // Si ce n'est pas le cas, cela signifie qu'on peut garder le pixel
+                   nouvelleImg[i][j - decalage] = img[i][j];
+               } else {
+                   // Sinon, on ne le garde pas, et on décale les suivants
+                   if (decalage == 0) {
+                       decalage++;
+                   }
+               }
+               nbSommet++;
+           }
+           decalage--;
+       }
+       return nouvelleImg;
    }
 }

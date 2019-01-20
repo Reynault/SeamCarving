@@ -87,90 +87,51 @@ public class Principale {
     }
 
     public static void main_premiere_partie(){
-            // On demande à l'utilisateur le nom de l'image de base
-            Scanner sc = new Scanner(System.in);
-            long chrono;
-            long chrono2;
-            long div = 1000;
-            System.out.println("Quelle image souhaitez-vous choisir ? (sans le pgm)");
-            // On récupère la chaîne de l'utilisateur
-            String image = sc.nextLine();
+        Scanner sc = new Scanner(System.in);
+        int[][] img;
+        int[][] itr;
+        Graph g;
+        ArrayList<Integer> topo;
+        ArrayList<Integer> ccm;
 
-            chrono = java.lang.System.currentTimeMillis();
+        // Image cible
+        System.out.println("Quelle image souhaitez-vous choisir ? (sans le pgm)");
+        String image = sc.nextLine();
 
-            // On lit l'image
-            int[][] img = SeamCarving.readpgm(image + ".pgm");
+        // Nom du fichier final
+        System.out.println("Nom du fichier final ? (sans le pgm)");
+        String imagedestination = sc.nextLine();
 
-            chrono2 = java.lang.System.currentTimeMillis();
-            System.out.println("Temps pour readpgm : " + (chrono2 - chrono) + " millisecondes");
-            chrono = java.lang.System.currentTimeMillis();
+        // Nombre de fois qu'on utilise le seam carving
+        System.out.println("Combien de fois voulez-vous utiliser le seam carving ?");
+        int nb = sc.nextInt();
+        sc.nextLine();
+
+        // On lit l'image
+        img = SeamCarving.readpgm(image + ".pgm");
+
+        // Utilisation du seam carving nb fois
+        for(int k = 0; k < nb ; k++) {
+
 
             // On calcule les facteurs d'intêret
-            int[][] itr = SeamCarving.interest(img);
-
-            chrono2 = java.lang.System.currentTimeMillis();
-            System.out.println("Temps pour interest : " + (chrono2 - chrono) + " millisecondes");
-            chrono = java.lang.System.currentTimeMillis();
+            itr = SeamCarving.interest(img);
 
             // On réalise un graphe sur les facteurs d'intérêt
-            Graph g = SeamCarving.tograph(itr);
-
-            chrono2 = java.lang.System.currentTimeMillis();
-            System.out.println("Temps pour tograph : " + (chrono2 - chrono) + " millisecondes");
-            chrono = java.lang.System.currentTimeMillis();
+            g = SeamCarving.tograph(itr);
 
             // Puis on réalise un tri topologique
-            ArrayList<Integer> topo = SeamCarving.tritopo(g);
-
-            chrono2 = java.lang.System.currentTimeMillis();
-            System.out.println("Temps pour topo : " + (chrono2 - chrono) + " millisecondes");
-            chrono = java.lang.System.currentTimeMillis();
+            topo = SeamCarving.tritopo(g);
 
             // On applique l'algorithme de bellman pour récupérer le chemin de coût minimal entre s et t
-            ArrayList<Integer> ccm = SeamCarving.bellman(g, 0, g.vertices() - 1, topo);
-
-            chrono2 = java.lang.System.currentTimeMillis();
-            System.out.println("Temps pour bellman : " + (chrono2 - chrono) + " millisecondes");
-            chrono = java.lang.System.currentTimeMillis();
+            ccm = SeamCarving.bellman(g, 0, g.vertices() - 1, topo);
 
             // Puis on recreér la nouvelle image avec une colonne en moins
-            int nbSommet = 1;
-            int hauteur = img.length;
-            int largeur = img[0].length;
-            int[][] nouvelleImg = new int[hauteur][largeur - 1];
-            int decalage = 0;
-            // Pour chaque pixel de la première image
-            for (int i = 0; i < hauteur; i++) {
-                for (int j = 0; j < largeur; j++) {
-                    // On regarde si le numéro du sommet est contenu dans le CCM
-                    if (!ccm.contains(nbSommet)) {
-                        // Si ce n'est pas le cas, cela signifie qu'on peut garder le pixel
-                        nouvelleImg[i][j - decalage] = img[i][j];
-                    } else {
-                        // Sinon, on ne le garde pas, et on décale les suivants
-                        if (decalage == 0) {
-                            decalage++;
-                        }
-                    }
-                    nbSommet++;
-                }
-                decalage--;
-            }
+            img = SeamCarving.recup_nouvelleImage(img,ccm);
+        }
 
-            chrono2 = java.lang.System.currentTimeMillis();
-            System.out.println("Temps pour nouvelle image : " + (chrono2 - chrono) + " millisecondes");
-
-            System.out.println("Nom du fichier final ? (sans le pgm)");
-            // On récupère la chaîne de l'utilisateur qui indique le nom du fichier résultant
-            image = sc.nextLine();
-
-            chrono = java.lang.System.currentTimeMillis();
-
-            // On écrit ensuite la nouvelle image
-            SeamCarving.writepgm(nouvelleImg, image + ".pgm");
-
-            chrono2 = java.lang.System.currentTimeMillis();
-            System.out.println("Temps pour writepgm : " + (chrono2 - chrono) + " millisecondes");
+        // On écrit ensuite la nouvelle image
+        SeamCarving.writepgm(img, imagedestination + ".pgm");
     }
 
     /**
@@ -181,11 +142,14 @@ public class Principale {
         try {
             main_premiere_partie();
         }catch(ArrayIndexOutOfBoundsException e){
-            System.out.println("L'image finale est vide, la largeur de l'image initiale est de 1.");
+            System.out.println(e.getMessage());
+            System.out.println("L'image finale est vide.");
         }catch (NullPointerException e){
-            System.out.println("Image cible inttrouvable.");
+            System.out.println(e.getMessage());
+            System.out.println("Image cible introuvable.");
         }catch(Exception e){
-            System.out.println("Une erreur est survenue lors du lancement de l'application.");
+            System.out.println(e.getMessage());
+            System.out.println("Une erreur est survenue lors de l'exécution de l'application.");
         }
     }
 }

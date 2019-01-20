@@ -5,14 +5,14 @@ import java.util.ArrayList;
 public class Test
 {
    static boolean visite[];
-   public static void dfs(Graph g, int u, ArrayList<Integer> topo)
+   public static void dfs(Graph g, int u, ArrayList<Integer> suffixe)
 	 {
 		visite[u] = true;
 		//System.out.println("Je visite " + u);
 		for (Edge e: g.next(u))
 		  if (!visite[e.to]) {
-			  dfs(g, e.to, topo);
-			  topo.add(e.to);
+			  dfs(g, e.to, suffixe);
+			  suffixe.add(e.to);
 		  }
 	 }
 
