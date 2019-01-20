@@ -5,10 +5,9 @@ import modele.graph.Graph;
 import modele.graph.GraphArrayList;
 import modele.graph.Test;
 
+import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.util.*;
 
 public class SeamCarving
 {
@@ -37,6 +36,8 @@ public class SeamCarving
 			  count++;
 		   }
 		   return im;
+        }catch (NullPointerException e){
+            return null;
         }catch(Throwable t) {
             t.printStackTrace(System.err) ;
             return null;
@@ -177,8 +178,8 @@ public class SeamCarving
        Test.initialiserVisite(g.vertices());
        // Lancement du parcours en profondeur
        Test.dfs(g,0,topo);
-       // On ajoute ensuite le sommet de départ
-       topo.add(0,0);
+       topo.add(0);
+       Collections.reverse(topo);
        return topo;
    }
 
@@ -200,12 +201,19 @@ public class SeamCarving
        int value;
        Iterator<Edge> i;
        Edge next;
+       // On parcourt tous les sommets dans le tri topologique
        for(Integer vertices : order){
             min = 0;
+            // Pour chaque sommet, on trouve la plus petite valeur pour le sommet précédent et le coût de l'arête.
             i = g.prev(vertices).iterator();
+            // Donc on parcourt tous les sommets précédents
+
+           // Gestion du premier sommet précédent pour initialiser min
             if(i.hasNext()){
                 next = i.next();
+                // on cherche min(T[u] + coût(u,v))
                 min = T[next.getFrom()] + next.getCost();
+                // Parcours des autres
                 while(i.hasNext()){
                     next = i.next();
                     value = T[next.getFrom()] + next.getCost();
@@ -214,17 +222,23 @@ public class SeamCarving
                     }
                 }
             }
+            // Ensuite, on met à jour T
             T[vertices] = min;
        }
        // On récupère ensuite les sommets du CCM entre s et t
        res.add(t);
+       // Donc pour ça, on part de la fin, et on s'arrête quand on arrive au début
        while(t != s){
            i = g.prev(t).iterator();
+           // Puis on regarde tous les sommets précédents
            if(i.hasNext()){
+               // On commence par initialiser min avec le premier
                next = i.next();
                t = next.getFrom();
                min = T[next.getFrom()]+ next.getCost();
+               // Puis pour les autres
                while (i.hasNext()){
+                   // On regarde min(T[u]+coût(u,v))
                    next = i.next();
                    value = T[next.getFrom()]+next.getCost();
                    if(value < min){
@@ -233,6 +247,7 @@ public class SeamCarving
                    }
                }
            }
+           // Puis on ajoute en tête de la liste le sommet précédent
            res.add(0,t);
        }
        return res;

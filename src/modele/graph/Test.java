@@ -12,7 +12,7 @@ public class Test
 		for (Edge e: g.next(u))
 		  if (!visite[e.to]) {
 			  dfs(g, e.to, topo);
-			  topo.add(0,e.to);
+			  topo.add(e.to);
 		  }
 	 }
 
@@ -44,7 +44,7 @@ public class Test
 		ArrayList<Integer> fin = new ArrayList<Integer>();
 		dfs(g, 3, fin);
 	 }
-   
+
    public static void main(String[] args)
 	 {
 		testGraph();
