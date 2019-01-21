@@ -91,6 +91,7 @@ public class SeamCarving
     /**
      * Méthode interest qui permet de récupérer le tableau contenant les intérêts des pixels de l'image en fonction des
      * voisins.
+     *
      * @param image tableau des valeurs des pixels de l'image
      * @return tableau contenant les facteurs d'intérêt
      */
@@ -123,7 +124,8 @@ public class SeamCarving
    }
 
     /**
-     * Méthode qui permet de créer un graphe via un tableau (celui qui correspond aux intérêts)
+     * Méthode qui permet de créer un graphe via un tableau.
+     *
      * @param itr le tableau à utiliser
      * @return Le graphe
      */
@@ -167,6 +169,65 @@ public class SeamCarving
        }
        return graphe;
    }
+
+    public static Graph tograph_energie_avant(int[][] img){
+        // Récupération du nombre de sommets
+        int nbSommets = img.length * img[0].length;
+        // Instanciation du graph avec les deux sommets supplémentaires
+        GraphArrayList graphe = new GraphArrayList(nbSommets+2);
+        // Hauteur du tableau
+        int hauteur = img.length;
+        // Initialisation du numéro de sommets
+        int numSommet = 1;
+        int gauche;
+        int droite;
+        int largeur = img[0].length;
+        // Initialisation des arêtes partant de la base
+        for (int i = 1; i <= largeur ; i++){
+            graphe.addEdge(new Edge(0,i,0));
+        }
+        // On parcourt le tableau
+        for(int i = 0 ; i < hauteur-1 ; i++){
+            for(int j = 0 ; j < largeur ; j++){
+                // Valeur du sommet gauche
+                if(j == 0){
+                    gauche = 0;
+                }else{
+                    gauche = img[i][j-1];
+                }
+                // Valeur du sommet droit
+                if(j == largeur - 1){
+                    droite = 0;
+                }else{
+                    droite = img[i][j+1];
+                }
+                // Ajout des arêtes
+                graphe.addEdge(new Edge(numSommet,numSommet+largeur,Math.abs(droite-gauche)));
+                if(j > 0){
+                    graphe.addEdge(new Edge(numSommet,numSommet+largeur-1,Math.abs(gauche-img[i+1][j])));
+                }
+                if(j < largeur - 1){
+                    graphe.addEdge(new Edge(numSommet,numSommet+largeur+1,Math.abs(droite-img[i+1][j])));
+                }
+
+                // Incrémentation du numéro du sommet parcouru
+                numSommet++;
+            }
+        }
+        // On lie ensuite les sommets au sommet de fin
+        for(int i = 0 ; i < largeur ; i++){
+            if(i == 0){
+                graphe.addEdge(new Edge(numSommet, nbSommets + 1, img[hauteur-1][i+1]));
+            }else if(i == largeur - 1){
+                graphe.addEdge(new Edge(numSommet, nbSommets + 1, img[hauteur-1][i-1]));
+            }else{
+                graphe.addEdge(new Edge(numSommet, nbSommets + 1,
+                        Math.abs(img[hauteur-1][i-1]-img[hauteur-1][i+1])));
+            }
+            numSommet++;
+        }
+        return graphe;
+    }
 
     /**
      * Tri topologique, on utilise la méthode de la classe Test, avec un paramètre supplémentaire qui

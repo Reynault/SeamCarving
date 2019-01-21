@@ -46,7 +46,7 @@ public class Principale {
      */
     public static void test_tograph(){
         // Récupération du tableau d'intérêts
-        int[][] image = SeamCarving.readpgm("assets/test.pgm");
+        int[][] image = SeamCarving.readpgm("test.pgm");
         int[][] interet = SeamCarving.interest(image);
         // Création du graphe et affichage dans un fichier
         Graph g = SeamCarving.tograph(interet);
@@ -86,6 +86,14 @@ public class Principale {
         }
     }
 
+    public static void test_tograph_energie_avant(){
+        // Récupération de l'image
+        int[][] image = SeamCarving.readpgm("test.pgm");
+        // Création du graphe et affichage dans un fichier
+        Graph g = SeamCarving.tograph_energie_avant(image);
+        g.writeFile("graphe.dot");
+    }
+
     public static void main_premiere_partie(){
         Scanner sc = new Scanner(System.in);
         int[][] img;
@@ -113,12 +121,8 @@ public class Principale {
         // Utilisation du seam carving nb fois
         for(int k = 0; k < nb ; k++) {
 
-
-            // On calcule les facteurs d'intêret
-            itr = SeamCarving.interest(img);
-
             // On réalise un graphe sur les facteurs d'intérêt
-            g = SeamCarving.tograph(itr);
+            g = SeamCarving.tograph_energie_avant(img);
 
             // Puis on réalise un tri topologique
             topo = SeamCarving.tritopo(g);
@@ -140,7 +144,7 @@ public class Principale {
      */
     public static void main(String[] args){
         try {
-            main_premiere_partie();
+            test_tograph_energie_avant();
         }catch(ArrayIndexOutOfBoundsException e){
             System.out.println(e.getMessage());
             System.out.println("L'image finale est vide.");
