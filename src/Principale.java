@@ -101,6 +101,7 @@ public class Principale {
         Graph g;
         ArrayList<Integer> topo;
         ArrayList<Integer> ccm;
+        double chrono, chrono2;
 
         // Image cible
         System.out.println("Quelle image souhaitez-vous choisir ?");
@@ -115,27 +116,65 @@ public class Principale {
         int nb = sc.nextInt();
         sc.nextLine();
 
+        System.out.println("Application du seam carving en cours ...");
+
         // On lit l'image
+//        chrono = System.currentTimeMillis();
+
         img = SeamCarving.readpgm(image);
 
-        System.out.println("Application du seam carving en cours ...");
+//        chrono2 = System.currentTimeMillis();
+//        System.out.println("Temps read : " + (chrono2 - chrono)/1000+ " ms");
+
+
+//         int[][] itr;
 
         // Utilisation du seam carving nb fois
         for(int k = 0; k < nb ; k++) {
             // On réalise un graphe sur les facteurs d'intérêt
+
+//            itr = SeamCarving.interest(img);
+
+//            g = SeamCarving.tograph(itr);
+
+//            chrono = System.currentTimeMillis();
+
             g = SeamCarving.tograph_energie_avant(img);
 
+//            chrono2 = System.currentTimeMillis();
+//            System.out.println("Temps to_graph : " + (chrono2 - chrono)/1000+ " ms");
+
             // Puis on réalise un tri topologique
+//            chrono = System.currentTimeMillis();
+
             topo = SeamCarving.tritopo(g);
+
+//            chrono2 = System.currentTimeMillis();
+//            System.out.println("Temps tri topo : " + (chrono2 - chrono)/1000+ " ms");
+
+//            chrono = System.currentTimeMillis();
 
             // On applique l'algorithme de bellman pour récupérer le chemin de coût minimal entre s et t
             ccm = SeamCarving.bellman(g, 0, g.vertices() - 1, topo);
 
+//            chrono2 = System.currentTimeMillis();
+//            System.out.println("Temps bellman : " + (chrono2 - chrono)/1000+ " ms");
+
+//            chrono = System.currentTimeMillis();
+
             // Puis on recreér la nouvelle image avec une colonne en moins
             img = SeamCarving.recup_nouvelleImage(img,ccm);
+
+//            chrono2 = System.currentTimeMillis();
+//            System.out.println("Temps nouvelle image : " + (chrono2 - chrono)/1000+ " ms");
         }
+//        chrono = System.currentTimeMillis();
+
         // On écrit ensuite la nouvelle image
         SeamCarving.writepgm(img, imagedestination);
+
+//        chrono2 = System.currentTimeMillis();
+//        System.out.println("Temps write pgm : " + (chrono2 - chrono)/1000 + " ms");
     }
 
     public static void test_botchedDFS(){

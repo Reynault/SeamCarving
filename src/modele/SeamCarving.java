@@ -334,15 +334,19 @@ public class SeamCarving
        int largeur = img[0].length;
        int[][] nouvelleImg = new int[hauteur][largeur - 1];
        int decalage = 0;
+       int numeroSommetCCM = 1;
        // Pour chaque pixel de la première image
        for (int i = 0; i < hauteur; i++) {
            for (int j = 0; j < largeur; j++) {
                // On regarde si le numéro du sommet est contenu dans le CCM
-               if (!ccm.contains(nbSommet)) {
+               if (ccm.get(numeroSommetCCM) != nbSommet) {
                    // Si ce n'est pas le cas, cela signifie qu'on peut garder le pixel
                    nouvelleImg[i][j - decalage] = img[i][j];
                } else {
                    // Sinon, on ne le garde pas, et on décale les suivants
+                   if( numeroSommetCCM < ccm.size()-1) {
+                       numeroSommetCCM ++;
+                   }
                    if (decalage == 0) {
                        decalage++;
                    }
