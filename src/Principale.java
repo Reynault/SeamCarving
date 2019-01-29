@@ -2,7 +2,6 @@ import modele.SeamCarving;
 import modele.graph.DFS;
 import modele.graph.Graph;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,6 +9,9 @@ import java.util.Scanner;
  * Classe principale de test
  */
 public class Principale {
+
+    private static Scanner sc;
+
     /**
      * Méthode de test de la méthode writepgm, on lit une image pgm puis on la réécrit
      * et on l'affiche pour voir si le résultat est équivalent
@@ -87,6 +89,9 @@ public class Principale {
         }
     }
 
+    /**
+     * Méthode de test de la méthode tograph_energie_avant
+     */
     public static void test_tograph_energie_avant(){
         // Récupération de l'image
         int[][] image = SeamCarving.readpgm("test.pgm");
@@ -95,13 +100,14 @@ public class Principale {
         g.writeFile("graphe.dot");
     }
 
-    public static void main_premiere_partie(){
-        Scanner sc = new Scanner(System.in);
+    /**
+     * Méthode utilisée pour l'application du seam carving sans la méthode de l'énergie avant
+     */
+    public static void seam_carving_simple(){
         int[][] img;
         Graph g;
         ArrayList<Integer> topo;
         ArrayList<Integer> ccm;
-        double chrono, chrono2;
 
         // Image cible
         System.out.println("Quelle image souhaitez-vous choisir ?");
@@ -119,71 +125,79 @@ public class Principale {
         System.out.println("Application du seam carving en cours ...");
 
         // On lit l'image
-//        chrono = System.currentTimeMillis();
-
         img = SeamCarving.readpgm(image);
 
-//        chrono2 = System.currentTimeMillis();
-//        System.out.println("Temps read : " + (chrono2 - chrono)/1000+ " ms");
-
-
-//         int[][] itr;
+         int[][] itr;
 
         // Utilisation du seam carving nb fois
         for(int k = 0; k < nb ; k++) {
             // On réalise un graphe sur les facteurs d'intérêt
 
-//            itr = SeamCarving.interest(img);
+            itr = SeamCarving.interest(img);
 
-//            g = SeamCarving.tograph(itr);
-
-//            chrono = System.currentTimeMillis();
-
-            g = SeamCarving.tograph_energie_avant(img);
-
-//            chrono2 = System.currentTimeMillis();
-//            System.out.println("Temps to_graph : " + (chrono2 - chrono)/1000+ " ms");
+            g = SeamCarving.tograph(itr);
 
             // Puis on réalise un tri topologique
-//            chrono = System.currentTimeMillis();
-
             topo = SeamCarving.tritopo(g);
-
-//            chrono2 = System.currentTimeMillis();
-//            System.out.println("Temps tri topo : " + (chrono2 - chrono)/1000+ " ms");
-
-//            chrono = System.currentTimeMillis();
 
             // On applique l'algorithme de bellman pour récupérer le chemin de coût minimal entre s et t
             ccm = SeamCarving.bellman(g, 0, g.vertices() - 1, topo);
 
-//            chrono2 = System.currentTimeMillis();
-//            System.out.println("Temps bellman : " + (chrono2 - chrono)/1000+ " ms");
-
-//            chrono = System.currentTimeMillis();
-
             // Puis on recreér la nouvelle image avec une colonne en moins
             img = SeamCarving.recup_nouvelleImage(img,ccm);
-
-//            chrono2 = System.currentTimeMillis();
-//            System.out.println("Temps nouvelle image : " + (chrono2 - chrono)/1000+ " ms");
         }
-//        chrono = System.currentTimeMillis();
 
         // On écrit ensuite la nouvelle image
         SeamCarving.writepgm(img, imagedestination);
-
-//        chrono2 = System.currentTimeMillis();
-//        System.out.println("Temps write pgm : " + (chrono2 - chrono)/1000 + " ms");
     }
 
-    public static void test_botchedDFS(){
-        // Récupération du graphe
-        int[][] image = SeamCarving.readpgm("test.pgm");
-        int[][] itr = SeamCarving.interest(image);
-        Graph g = SeamCarving.tograph(itr);
-        DFS.botched_dfs2(g,0);
+    /**
+     * Méthode utilisée pour l'application du seam carving avec la méthode de l'énergie avant
+     */
+    public static void seam_carving_energie_avant(){
+        int[][] img;
+        Graph g;
+        ArrayList<Integer> topo;
+        ArrayList<Integer> ccm;
+
+        // Image cible
+        System.out.println("Quelle image souhaitez-vous choisir ?");
+        String image = sc.nextLine();
+
+        // Nom du fichier final
+        System.out.println("Nom du fichier final ?");
+        String imagedestination = sc.nextLine();
+
+        // Nombre de fois qu'on utilise le seam carving
+        System.out.println("Combien de fois voulez-vous utiliser le seam carving ?");
+        int nb = sc.nextInt();
+        sc.nextLine();
+
+        System.out.println("Application du seam carving en cours ...");
+
+        // On lit l'image
+        img = SeamCarving.readpgm(image);
+
+        // Utilisation du seam carving nb fois
+        for(int k = 0; k < nb ; k++) {
+
+            // Création du graph via la méthode énergie avant
+            g = SeamCarving.tograph_energie_avant(img);
+
+            // Puis on réalise un tri topologique
+            topo = SeamCarving.tritopo(g);
+
+            // On applique l'algorithme de bellman pour récupérer le chemin de coût minimal entre s et t
+            ccm = SeamCarving.bellman(g, 0, g.vertices() - 1, topo);
+
+            // Puis on recreér la nouvelle image avec une colonne en moins
+            img = SeamCarving.recup_nouvelleImage(img,ccm);
+        }
+
+        // On écrit ensuite la nouvelle image
+        SeamCarving.writepgm(img, imagedestination);
     }
+
 
     /**
      * Méthode main
@@ -191,7 +205,20 @@ public class Principale {
      */
     public static void main(String[] args){
         try {
-            main_premiere_partie();
+            sc = new Scanner(System.in);
+            System.out.println("Veuillez choisir une option : \nSeam carving simple : 1\nSeam carving avec énergie avant : 2");
+            int option = sc.nextInt();
+            sc.nextLine();
+            switch (option){
+                case 1:
+                    seam_carving_simple();
+                    break;
+                case 2:
+                    seam_carving_energie_avant();
+                    break;
+                default:
+                    break;
+            }
         }catch(ArrayIndexOutOfBoundsException e){
             System.out.println(e.getMessage());
             System.out.println("L'image finale est vide.");
