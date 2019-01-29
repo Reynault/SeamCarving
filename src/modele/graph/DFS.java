@@ -2,10 +2,18 @@ package modele.graph;
 
 import java.util.Stack;
 
-class DFS
+public class DFS
 {
-    
-    public static void botched_dfs1(Graph g, int s){
+	/**
+	 * Explications :
+	 *
+	 *
+	 *
+	 *
+	 * @param g
+	 * @param s
+	 */
+	public static void botched_dfs1(Graph g, int s){
 	Stack<Integer> stack = new Stack<Integer>();
 	boolean visited[] = new boolean[g.vertices()];
 	stack.push(s);

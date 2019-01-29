@@ -240,6 +240,8 @@ public class SeamCarving
        ArrayList<Integer> topo = new ArrayList<Integer>();
        Test.initialiserVisite(g.vertices());
        // Lancement du parcours en profondeur
+       // Le graphe est forcement connexe, donc pas besoin de mettre
+       // le dfs dans un boucle
        Test.dfs(g,0,topo);
        // Ajout du premier sommet
        topo.add(0);

@@ -1,4 +1,5 @@
 import modele.SeamCarving;
+import modele.graph.DFS;
 import modele.graph.Graph;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ public class Principale {
      */
     public static void test_writepgm(){
         // Lecture de l'image de test
-        int[][] image = SeamCarving.readpgm("assets/test.pgm");
+        int[][] image = SeamCarving.readpgm("test.pgm");
         // Écriture de l'image
         SeamCarving.writepgm(image,"test2.pgm");
     }
@@ -25,7 +26,7 @@ public class Principale {
      */
     public static void test_interest(){
         // Récupération du tableau d'intérêts
-        int[][] image = SeamCarving.readpgm("assets/test.pgm");
+        int[][] image = SeamCarving.readpgm("test.pgm");
         int[][] interet = SeamCarving.interest(image);
         int hauteur = interet.length;
         if(hauteur > 0) {
@@ -60,7 +61,7 @@ public class Principale {
      */
     public static void test_tritopo(){
         // Récupération du graphe
-        int[][] image = SeamCarving.readpgm("assets/test.pgm");
+        int[][] image = SeamCarving.readpgm("test.pgm");
         int[][] itr = SeamCarving.interest(image);
         Graph g = SeamCarving.tograph(itr);
         // Tri topologique et affichage des sommets dans le sens inverse de l'ordre suffixe
@@ -75,7 +76,7 @@ public class Principale {
      */
     public static void test_bellman(){
         // Récupération du tri topo
-        int[][] image = SeamCarving.readpgm("assets/test.pgm");
+        int[][] image = SeamCarving.readpgm("test.pgm");
         int[][] itr = SeamCarving.interest(image);
         Graph g = SeamCarving.tograph(itr);
         ArrayList<Integer> topo = SeamCarving.tritopo(g);
@@ -97,17 +98,16 @@ public class Principale {
     public static void main_premiere_partie(){
         Scanner sc = new Scanner(System.in);
         int[][] img;
-        int[][] itr;
         Graph g;
         ArrayList<Integer> topo;
         ArrayList<Integer> ccm;
 
         // Image cible
-        System.out.println("Quelle image souhaitez-vous choisir ? (sans le pgm)");
+        System.out.println("Quelle image souhaitez-vous choisir ?");
         String image = sc.nextLine();
 
         // Nom du fichier final
-        System.out.println("Nom du fichier final ? (sans le pgm)");
+        System.out.println("Nom du fichier final ?");
         String imagedestination = sc.nextLine();
 
         // Nombre de fois qu'on utilise le seam carving
@@ -116,11 +116,12 @@ public class Principale {
         sc.nextLine();
 
         // On lit l'image
-        img = SeamCarving.readpgm(image + ".pgm");
+        img = SeamCarving.readpgm(image);
+
+        System.out.println("Application du seam carving en cours ...");
 
         // Utilisation du seam carving nb fois
         for(int k = 0; k < nb ; k++) {
-
             // On réalise un graphe sur les facteurs d'intérêt
             g = SeamCarving.tograph_energie_avant(img);
 
@@ -133,9 +134,16 @@ public class Principale {
             // Puis on recreér la nouvelle image avec une colonne en moins
             img = SeamCarving.recup_nouvelleImage(img,ccm);
         }
-
         // On écrit ensuite la nouvelle image
-        SeamCarving.writepgm(img, imagedestination + ".pgm");
+        SeamCarving.writepgm(img, imagedestination);
+    }
+
+    public static void test_botchedDFS(){
+        // Récupération du graphe
+        int[][] image = SeamCarving.readpgm("test.pgm");
+        int[][] itr = SeamCarving.interest(image);
+        Graph g = SeamCarving.tograph(itr);
+        DFS.botched_dfs2(g,0);
     }
 
     /**
@@ -144,7 +152,7 @@ public class Principale {
      */
     public static void main(String[] args){
         try {
-            test_tograph_energie_avant();
+            main_premiere_partie();
         }catch(ArrayIndexOutOfBoundsException e){
             System.out.println(e.getMessage());
             System.out.println("L'image finale est vide.");
