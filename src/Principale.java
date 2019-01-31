@@ -1,4 +1,7 @@
 import modele.SeamCarving;
+import modele.algo.Algo;
+import modele.algo.EnergieAvant;
+import modele.algo.Simple;
 import modele.graph.DFS;
 import modele.graph.Graph;
 
@@ -9,8 +12,6 @@ import java.util.Scanner;
  * Classe principale de test
  */
 public class Principale {
-
-    private static Scanner sc;
 
     /**
      * Méthode de test de la méthode writepgm, on lit une image pgm puis on la réécrit
@@ -101,124 +102,70 @@ public class Principale {
     }
 
     /**
-     * Méthode utilisée pour l'application du seam carving sans la méthode de l'énergie avant
-     */
-    public static void seam_carving_simple(){
-        int[][] img;
-        Graph g;
-        ArrayList<Integer> topo;
-        ArrayList<Integer> ccm;
-
-        // Image cible
-        System.out.println("Quelle image souhaitez-vous choisir ?");
-        String image = sc.nextLine();
-
-        // Nom du fichier final
-        System.out.println("Nom du fichier final ?");
-        String imagedestination = sc.nextLine();
-
-        // Nombre de fois qu'on utilise le seam carving
-        System.out.println("Combien de fois voulez-vous utiliser le seam carving ?");
-        int nb = sc.nextInt();
-        sc.nextLine();
-
-        System.out.println("Application du seam carving en cours ...");
-
-        // On lit l'image
-        img = SeamCarving.readpgm(image);
-
-         int[][] itr;
-
-        // Utilisation du seam carving nb fois
-        for(int k = 0; k < nb ; k++) {
-            // On réalise un graphe sur les facteurs d'intérêt
-
-            itr = SeamCarving.interest(img);
-
-            g = SeamCarving.tograph(itr);
-
-            // Puis on réalise un tri topologique
-            topo = SeamCarving.tritopo(g);
-
-            // On applique l'algorithme de bellman pour récupérer le chemin de coût minimal entre s et t
-            ccm = SeamCarving.bellman(g, 0, g.vertices() - 1, topo);
-
-            // Puis on recreér la nouvelle image avec une colonne en moins
-            img = SeamCarving.recup_nouvelleImage(img,ccm);
-        }
-
-        // On écrit ensuite la nouvelle image
-        SeamCarving.writepgm(img, imagedestination);
-    }
-
-    /**
-     * Méthode utilisée pour l'application du seam carving avec la méthode de l'énergie avant
-     */
-    public static void seam_carving_energie_avant(){
-        int[][] img;
-        Graph g;
-        ArrayList<Integer> topo;
-        ArrayList<Integer> ccm;
-
-        // Image cible
-        System.out.println("Quelle image souhaitez-vous choisir ?");
-        String image = sc.nextLine();
-
-        // Nom du fichier final
-        System.out.println("Nom du fichier final ?");
-        String imagedestination = sc.nextLine();
-
-        // Nombre de fois qu'on utilise le seam carving
-        System.out.println("Combien de fois voulez-vous utiliser le seam carving ?");
-        int nb = sc.nextInt();
-        sc.nextLine();
-
-        System.out.println("Application du seam carving en cours ...");
-
-        // On lit l'image
-        img = SeamCarving.readpgm(image);
-
-        // Utilisation du seam carving nb fois
-        for(int k = 0; k < nb ; k++) {
-
-            // Création du graph via la méthode énergie avant
-            g = SeamCarving.tograph_energie_avant(img);
-
-            // Puis on réalise un tri topologique
-            topo = SeamCarving.tritopo(g);
-
-            // On applique l'algorithme de bellman pour récupérer le chemin de coût minimal entre s et t
-            ccm = SeamCarving.bellman(g, 0, g.vertices() - 1, topo);
-
-            // Puis on recreér la nouvelle image avec une colonne en moins
-            img = SeamCarving.recup_nouvelleImage(img,ccm);
-        }
-
-        // On écrit ensuite la nouvelle image
-        SeamCarving.writepgm(img, imagedestination);
-    }
-
-
-    /**
      * Méthode main
      * @param args
      */
     public static void main(String[] args){
         try {
-            sc = new Scanner(System.in);
+            Scanner sc = new Scanner(System.in);
             System.out.println("Veuillez choisir une option : \nSeam carving simple : 1\nSeam carving avec énergie avant : 2");
             int option = sc.nextInt();
             sc.nextLine();
+
+            Algo typeSeamCarving;
+            // En fonction du type de seam carving choisi, on change de type
             switch (option){
                 case 1:
-                    seam_carving_simple();
+                    typeSeamCarving = new Simple();
                     break;
                 case 2:
-                    seam_carving_energie_avant();
+                    typeSeamCarving = new EnergieAvant();
                     break;
                 default:
+                    typeSeamCarving = new Simple();
                     break;
             }
+
+            int[][] img;
+            Graph g;
+            ArrayList<Integer> topo;
+            ArrayList<Integer> ccm;
+
+            // Image cible
+            System.out.println("Quelle image souhaitez-vous choisir ?");
+            String image = sc.nextLine();
+
+            // Nom du fichier final
+            System.out.println("Nom du fichier final ?");
+            String imagedestination = sc.nextLine();
+
+            // Nombre de fois qu'on utilise le seam carving
+            System.out.println("Combien de fois voulez-vous utiliser le seam carving ?");
+            int nb = sc.nextInt();
+            sc.nextLine();
+
+            System.out.println("Application du seam carving en cours ...");
+
+            // On lit l'image
+            img = SeamCarving.readpgm(image);
+
+            // Utilisation du seam carving nb fois
+            for(int k = 0; k < nb ; k++) {
+                // On exécute le seam carving
+                g = typeSeamCarving.executer(img);
+
+                // Puis on réalise un tri topologique
+                topo = SeamCarving.tritopo(g);
+
+                // On applique l'algorithme de bellman pour récupérer le chemin de coût minimal entre s et t
+                ccm = SeamCarving.bellman(g, 0, g.vertices() - 1, topo);
+
+                // Puis on recreér la nouvelle image avec une colonne en moins
+                img = SeamCarving.recup_nouvelleImage(img,ccm);
+            }
+
+            // On écrit ensuite la nouvelle image
+            SeamCarving.writepgm(img, imagedestination);
         }catch(ArrayIndexOutOfBoundsException e){
             System.out.println(e.getMessage());
             System.out.println("L'image finale est vide.");
