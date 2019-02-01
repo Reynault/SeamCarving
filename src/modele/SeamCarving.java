@@ -15,8 +15,7 @@ public class SeamCarving
    public static int[][] readpgm(String fn)
 	 {
         try {
-            InputStream f = ClassLoader.getSystemClassLoader().getResourceAsStream(String.format(fn));
-            BufferedReader d = new BufferedReader(new InputStreamReader(f));
+            BufferedReader d = new BufferedReader(new FileReader(fn));
             String magic = d.readLine();
             String line = d.readLine();
 		   while (line.startsWith("#")) {
@@ -36,9 +35,12 @@ public class SeamCarving
 			  count++;
 		   }
 		   d.close();
-		   f.close();
 		   return im;
         }catch (NullPointerException e){
+            return null;
+        }catch (FileNotFoundException e) {
+            System.out.println("\nImage cible introuvable.");
+            System.exit(1);
             return null;
         }catch(Throwable t) {
             t.printStackTrace(System.err) ;

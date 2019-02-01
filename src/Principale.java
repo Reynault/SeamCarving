@@ -5,7 +5,9 @@ import modele.algo.Simple;
 import modele.graph.DFS;
 import modele.graph.Graph;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -167,13 +169,10 @@ public class Principale {
             // On écrit ensuite la nouvelle image
             SeamCarving.writepgm(img, imagedestination);
         }catch(ArrayIndexOutOfBoundsException e){
-            System.out.println(e.getMessage());
             System.out.println("L'image finale est vide.");
-        }catch (NullPointerException e){
-            System.out.println(e.getMessage());
-            System.out.println("Image cible introuvable.");
+        }catch (InputMismatchException e){
+            System.out.println("Mauvaises options");
         }catch(Exception e){
-            System.out.println(e.getMessage());
             System.out.println("Une erreur est survenue lors de l'exécution de l'application.");
         }
     }
