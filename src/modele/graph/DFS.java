@@ -1,5 +1,6 @@
 package modele.graph;
 
+import java.util.Iterator;
 import java.util.Stack;
 
 public class DFS
@@ -127,6 +128,66 @@ public class DFS
 	System.out.println(stack.capacity());
     }
 
+	/**
+	 * Méthode qui permet de réaliser un parcours en profondeur correct et complet de manière itérative
+	 *
+	 * @param g graphe
+	 * @param s sommet de départ
+	 */
+	public static void dfs_complet(Graph g, int s){
+		// Variables
+		boolean end;
+		Doublon tete;
+		Iterator<Edge> i;
+		Edge n;
+		// Initialisation de la pile
+		Stack<Doublon> stack = new Stack<Doublon>();
+		// Initialisation du tableau des sommets visités
+		boolean[] visited = new boolean[g.vertices()];
+		// Ajout du premier sommet
+		stack.push(new Doublon(s, g.next(s).iterator()));
+		visited[s] = true;
+		System.out.println(s);
+		// Tant que la pile n'est pas vide
+		while(!stack.empty()){
+			// booléen qui indique si on a trouvé un voisin non visité à parcourir
+			end = true;
+			// Récupération de la tête de la pile : sommet en cours de visite
+			tete = stack.peek();
+			i = tete.getVoisins();
+			// On itére sur les voisins
+			while(i.hasNext() && end){
+				n = i.next();
+				// Pour chaque, on regarde si il a été visité
+				if(!visited[n.to]){
+					// Si c'est le cas, on ajoute le nouveau
+					// et on indique qu'on a trouvé un voisin à visité
+					end = false;
+					visited[n.to] = true;
+					System.out.println(n.to);
+					stack.push(new Doublon(n.to,g.next(n.to).iterator()));
+				}
+			}
+			// Si on ne trouve pas de voisin, on a fini de visité le sommet actuel
+			// donc on l'enlève
+			if(end){
+				stack.pop();
+			}
+		}
+	}
+
+	public static void test_dfs_complet(){
+		GraphArrayList g = new GraphArrayList(6);
+		g.addEdge(new Edge(0, 1, 1));
+		g.addEdge(new Edge(0, 2, 1));
+		g.addEdge(new Edge(0, 3, 1));
+		g.addEdge(new Edge(1, 4, 1));
+		g.addEdge(new Edge(4, 3, 1));
+		g.addEdge(new Edge(3, 5, 1));
+		g.addEdge(new Edge(5, 1, 1));
+		dfs_complet(g,0);
+	}
+
     public static void testGraph(){
 		int n = 5;
 		int i,j;
@@ -165,6 +226,6 @@ public class DFS
     }
     
     public static void main(String[] args){
-		testGraph();
+		test_dfs_complet();
     }
 }
