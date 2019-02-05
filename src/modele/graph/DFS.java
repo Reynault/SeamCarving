@@ -91,32 +91,38 @@ public class DFS
 
     
     public static void botched_dfs4(Graph g, int s){
-	Stack<Integer> stack = new Stack<Integer>();
-	boolean visited[] = new boolean[g.vertices()];
-	stack.push(s);
-	visited[s] = true;
-	System.out.println(s);
-	while (!stack.empty()){
-	    boolean end = true;
-	    /* (a) Soit u le sommet en haut de la pile */
-	    /* (b) Si u a un voisin non visité, alors */
-	    /*     (c) on le visite et on l'ajoute sur la pile */
-	    /* Sinon */
-	    /*     (d) on enlève u de la pile */
-	   
-	    /* (a) */
-	    int u = stack.peek();
-	    for (Edge e: g.next(u))
-		if (!visited[e.to]) /* (b) */
-		    {
-			visited[e.to] = true;
-			System.out.println(e.to);			
-			stack.push(e.to); /*(c) */
-			end = false;
-			break;
-		    }
-	    if (end) /*(d)*/
-		stack.pop();
+		// Pile
+		Stack<Integer> stack = new Stack<Integer>();
+		// tableau visité
+		boolean visited[] = new boolean[g.vertices()];
+		// En prend le premier
+		stack.push(s);
+		// On le met en temps que visité
+		visited[s] = true;
+		System.out.println(s);
+		// Tant qu'il y a des sommets à visiter
+		while (!stack.empty()){
+			// Init du booléen qui indique si on a fini de visiter un sommet
+			boolean end = true;
+			/* (a) Soit u le sommet en haut de la pile */
+			/* (b) Si u a un voisin non visité, alors */
+			/*     (c) on le visite et on l'ajoute sur la pile */
+			/* Sinon */
+			/*     (d) on enlève u de la pile */
+
+			/* (a) */
+			int u = stack.peek();
+			for (Edge e: g.next(u))
+			if (!visited[e.to]) /* (b) */
+				{
+				visited[e.to] = true;
+				System.out.println(e.to);
+				stack.push(e.to); /*(c) */
+				end = false;
+				break;
+				}
+			if (end) /*(d)*/
+			stack.pop();
 	}
 	System.out.println(stack.capacity());
     }
@@ -154,13 +160,11 @@ public class DFS
 				}
 			}
 		}
-		g2.writeFile("test2.dot");
 		System.out.println("Print df3 :");
 		botched_dfs3(g2, 0);
     }
     
-    public static void main(String[] args)
-    {
-	testGraph();
+    public static void main(String[] args){
+		testGraph();
     }
 }
