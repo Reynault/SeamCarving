@@ -1,5 +1,7 @@
 package modele.graph;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Stack;
 
@@ -134,12 +136,13 @@ public class DFS
 	 * @param g graphe
 	 * @param s sommet de départ
 	 */
-	public static void dfs_complet(Graph g, int s){
+	public static ArrayList<Integer> dfs_complet(Graph g, int s){
 		// Variables
 		boolean end;
 		Doublon tete;
 		Iterator<Edge> i;
 		Edge n;
+		ArrayList<Integer> topo = new ArrayList<Integer>();
 		// Initialisation de la pile
 		Stack<Doublon> stack = new Stack<Doublon>();
 		// Initialisation du tableau des sommets visités
@@ -147,7 +150,6 @@ public class DFS
 		// Ajout du premier sommet
 		stack.push(new Doublon(s, g.next(s).iterator()));
 		visited[s] = true;
-		System.out.println(s);
 		// Tant que la pile n'est pas vide
 		while(!stack.empty()){
 			// booléen qui indique si on a trouvé un voisin non visité à parcourir
@@ -164,7 +166,7 @@ public class DFS
 					// et on indique qu'on a trouvé un voisin à visité
 					end = false;
 					visited[n.to] = true;
-					System.out.println(n.to);
+//					System.out.println(n.to);
 					stack.push(new Doublon(n.to,g.next(n.to).iterator()));
 				}
 			}
@@ -172,8 +174,10 @@ public class DFS
 			// donc on l'enlève
 			if(end){
 				stack.pop();
+				topo.add(tete.getNumeroSommet());
 			}
 		}
+		return topo;
 	}
 
 	public static void test_dfs_complet(){
@@ -185,7 +189,8 @@ public class DFS
 		g.addEdge(new Edge(4, 3, 1));
 		g.addEdge(new Edge(3, 5, 1));
 		g.addEdge(new Edge(5, 1, 1));
-		dfs_complet(g,0);
+		ArrayList<Integer> topo = dfs_complet(g,0);
+		System.out.println(topo);
 	}
 
     public static void testGraph(){

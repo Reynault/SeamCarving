@@ -1,9 +1,6 @@
 package modele;
 
-import modele.graph.Edge;
-import modele.graph.Graph;
-import modele.graph.GraphArrayList;
-import modele.graph.Test;
+import modele.graph.*;
 
 import java.awt.*;
 import java.io.*;
@@ -240,13 +237,19 @@ public class SeamCarving
    public static ArrayList<Integer> tritopo(Graph g){
        // Initialisation de la liste des sommets, et du tableau de booléen utilisé par la fonction dfs
        ArrayList<Integer> topo = new ArrayList<Integer>();
-       Test.initialiserVisite(g.vertices());
        // Lancement du parcours en profondeur
        // Le graphe est forcement connexe, donc pas besoin de mettre
-       // le dfs dans un boucle
-       Test.dfs(g,0,topo);
+       // le dfs dans une boucle
+
+       // Ancien DFS
+//       Test.initialiserVisite(g.vertices());
+//       Test.dfs(g,0,topo);
        // Ajout du premier sommet
-       topo.add(0);
+//       topo.add(0);
+
+       // Nouveau DFS
+       topo = DFS.dfs_complet(g,0);
+
        // On prend l'ordre inverse de l'ordre suffixe
        Collections.reverse(topo);
        return topo;
