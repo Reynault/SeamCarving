@@ -2,6 +2,7 @@ import modele.SeamCarving;
 import modele.algo.Algo;
 import modele.algo.EnergieAvant;
 import modele.algo.Simple;
+import modele.algo.SimpleImplicite;
 import modele.graph.DFS;
 import modele.graph.Graph;
 
@@ -108,9 +109,10 @@ public class Principale {
      * @param args
      */
     public static void main(String[] args){
-        try {
+//        try {
             Scanner sc = new Scanner(System.in);
-            System.out.println("Veuillez choisir une option : \nSeam carving simple : 1\nSeam carving avec énergie avant : 2");
+            System.out.println("Veuillez choisir une option : \nSeam carving simple : 1\nSeam carving avec énergie " +
+                    "avant : 2\nSeam carving simple avec graphe implicite : 3");
             int option = sc.nextInt();
             sc.nextLine();
 
@@ -122,6 +124,9 @@ public class Principale {
                     break;
                 case 2:
                     typeSeamCarving = new EnergieAvant();
+                    break;
+                case 3:
+                    typeSeamCarving = new SimpleImplicite();
                     break;
                 default:
                     typeSeamCarving = new Simple();
@@ -168,12 +173,12 @@ public class Principale {
 
             // On écrit ensuite la nouvelle image
             SeamCarving.writepgm(img, imagedestination);
-        }catch(ArrayIndexOutOfBoundsException e){
-            System.out.println("L'image finale est vide.");
-        }catch (InputMismatchException e){
-            System.out.println("Mauvaises options");
-        }catch(Exception e){
-            System.out.println("Une erreur est survenue lors de l'exécution de l'application.");
-        }
+//        }catch(ArrayIndexOutOfBoundsException e){
+//            System.out.println("L'image finale est vide.");
+//        }catch (InputMismatchException e){
+//            System.out.println("Mauvaises options");
+//        }catch(Exception e){
+//            System.out.println("Une erreur est survenue lors de l'exécution de l'application.");
+//        }
     }
 }

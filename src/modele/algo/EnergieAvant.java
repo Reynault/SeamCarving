@@ -9,8 +9,6 @@ import modele.graph.Graph;
 public class EnergieAvant extends Algo {
     @Override
     public Graph executer(int[][] img) {
-        int[][] itr = SeamCarving.interest(img);
-
-        return SeamCarving.tograph(itr);
+        return SeamCarving.tograph_energie_avant(img);
     }
 }

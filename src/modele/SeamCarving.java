@@ -166,6 +166,7 @@ public class SeamCarving
            graphe.addEdge(new Edge(numSommet, nbSommets + 1, itr[hauteur-1][i]));
            numSommet++;
        }
+       System.out.println(nbSommets);
        return graphe;
    }
 

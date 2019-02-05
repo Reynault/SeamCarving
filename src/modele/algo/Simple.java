@@ -9,6 +9,8 @@ import modele.graph.Graph;
 public class Simple extends Algo {
     @Override
     public Graph executer(int[][] img) {
-        return SeamCarving.tograph_energie_avant(img);
+        int[][] itr = SeamCarving.interest(img);
+
+        return SeamCarving.tograph(itr);
     }
 }
