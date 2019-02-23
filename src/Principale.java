@@ -39,6 +39,10 @@ public class Principale {
                     break;
             }
 
+            System.out.println("Quel type de suppression souhaitez-vous réaliser ?\nColonnes : 1\nLignes : 2\nAutre : Colonnes");
+            option = sc.nextInt();
+            sc.nextLine();
+
             int[][] img;
             Graph g;
             ArrayList<Integer> topo;
@@ -62,6 +66,10 @@ public class Principale {
             // On lit l'image
             img = SeamCarving.readpgm(image);
 
+            if(option==2){
+                img = SeamCarving.rotationAvant(img);
+            }
+
             // Utilisation du seam carving nb fois
             for(int k = 0; k < nb ; k++) {
                 // On exécute le seam carving
@@ -75,6 +83,10 @@ public class Principale {
 
                 // Puis on recreér la nouvelle image avec une colonne en moins
                 img = SeamCarving.recup_nouvelleImage(img,ccm);
+            }
+
+            if(option==2){
+                img = SeamCarving.rotationAvant(img);
             }
 
             // On écrit ensuite la nouvelle image

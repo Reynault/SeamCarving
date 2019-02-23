@@ -363,4 +363,26 @@ public class SeamCarving
        }
        return nouvelleImg;
    }
+
+    /**
+     * Méthode qui permet de faire une rotation de l'image pour faciliter
+     * la suppression des lignes.
+     *
+     * En effet, supprimer des lignes revient à réaliser une rotation de l'image, appliquer le seam carving en colonnes
+     * puis refaire une rotation de l'image.
+     * @param img l'image
+     * @return la nouvelle image
+     */
+   public static int[][] rotationAvant(int[][] img){
+       int[][] res;
+       int hauteur = img.length;
+       int largeur = img[0].length;
+       res = new int[largeur][hauteur];
+       for(int i = 0 ; i < hauteur; i++){
+           for(int j = 0 ; j < largeur; j++){
+               res[j][i] = img[i][j];
+           }
+       }
+       return res;
+   }
 }
