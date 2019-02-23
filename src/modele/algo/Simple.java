@@ -11,7 +11,6 @@ public class Simple extends Algo {
     public Graph executer(int[][] img) {
         int[][] itr = SeamCarving.interest(img);
         Graph g = SeamCarving.tograph(itr);
-        g.writeFile("graph.dot");
         return g;
     }
 }

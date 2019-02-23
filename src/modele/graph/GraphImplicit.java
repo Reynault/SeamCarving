@@ -42,9 +42,6 @@ public class GraphImplicit extends Graph {
 			ligne = 0;
 			colonne = 0;
 		}
-		System.out.println("V : "+v);
-		System.out.println("Colonne : "+colonne);
-		System.out.println("Ligne : "+ligne);
 		// Récupération des arêtes
 
 		// Cas dans lequel le sommet ne fait pas parti des derniers sommets qui pointent
@@ -88,17 +85,16 @@ public class GraphImplicit extends Graph {
 			colonne = 0;
 		}
 		// Récupération des arêtes si le sommet ne fait pas parti de la première ligne
-		if(ligne > 1) {
+		if(ligne > 0) {
 			// Dans le cas où v est le dernier sommet
-			if (ligne == h) {
+			if (v == w*h+1) {
 				for (int i = 0; i < w; i++) {
 					// On lie ensuite les sommets au sommet de fin
-					edges.add(new Edge(v-(w-i), v, interest[h - 1][i]));
+					edges.add(new Edge(v-(w-i), v, interest[ligne - 1][i]));
 				}
 				// Pour les autres sommets
 			} else{
 				edges.add(new Edge(v - w, v, interest[ligne-1][colonne]));
-
 				if (colonne == 0) {
 					edges.add(new Edge(v - w + 1, v, interest[ligne-1][colonne+1]));
 				} else if (colonne == w - 1) {
@@ -109,7 +105,7 @@ public class GraphImplicit extends Graph {
 				}
 			}
 		// Dans le cas de la première ligne
-		}else if(ligne == 1){
+		}else if(ligne == 0 && v != 0){
 			edges.add(new Edge(0, v,0));
 		}
 	    return edges;

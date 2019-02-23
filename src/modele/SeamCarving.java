@@ -337,9 +337,6 @@ public class SeamCarving
    public static int[][] recup_nouvelleImage(int[][] img, ArrayList<Integer> ccm){
        int nbSommet = 1;
        int hauteur = img.length;
-       for(Integer e : ccm){
-           System.out.println("e :" + e);
-       }
        int largeur = img[0].length;
        int[][] nouvelleImg = new int[hauteur][largeur - 1];
        int decalage = 0;
