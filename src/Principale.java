@@ -92,6 +92,8 @@ public class Principale {
             // On écrit ensuite la nouvelle image
             SeamCarving.writepgm(img, imagedestination);
 
+            System.out.println("Fin du traitement");
+
         }catch(ArrayIndexOutOfBoundsException e){
             System.out.println("L'image finale est vide.");
         }catch (InputMismatchException e){
