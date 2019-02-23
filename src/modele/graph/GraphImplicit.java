@@ -32,65 +32,85 @@ public class GraphImplicit extends Graph {
 
     public Iterable<Edge> next(int v){
 		// Variables
-		ArrayList<Edge> edges = new ArrayList();
+		ArrayList<Edge> edges = new ArrayList<Edge>();
 		int ligne, colonne, valeur;
 		// Position dans le tableau
-		ligne = (v/w) - 1;
-		colonne = (v%w);
-
+		if(v != 0) {
+			ligne = (v-1)/w;
+			colonne = v - (ligne * w + 1);
+		}else{
+			ligne = 0;
+			colonne = 0;
+		}
+		System.out.println("V : "+v);
+		System.out.println("Colonne : "+colonne);
+		System.out.println("Ligne : "+ligne);
 		// Récupération des arêtes
 
-		// Dans le cas où v == 0
-		if(v == 0){
-			for (int i = 1; i <= w ; i++){
-				edges.add(new Edge(0,i,0));
+		// Cas dans lequel le sommet ne fait pas parti des derniers sommets qui pointent
+		// vers le sommet final
+		if(ligne < h-1){
+			// Dans le cas où v == 0
+			if(v == 0){
+				for (int i = 1; i <= w ; i++){
+					edges.add(new Edge(0,i,0));
+				}
+			// Dans le cas où v != dernier sommet
+			}else{
+				valeur = interest[ligne][colonne];
+				edges.add(new Edge(v, v + w, valeur));
+				if (colonne == 0) {
+					edges.add(new Edge(v, v + w + 1, valeur));
+				} else if (colonne == w - 1) {
+					edges.add(new Edge(v, v + w - 1, valeur));
+				} else {
+					edges.add(new Edge(v, v + w + 1, valeur));
+					edges.add(new Edge(v, v + w - 1, valeur));
+				}
 			}
-		// Dans le cas où v != dernier sommet
-		}else if(v != w*h){
-			valeur = interest[ligne][colonne];
-			edges.add(new Edge(v, v + w, valeur));
-			if (colonne == 0) {
-				edges.add(new Edge(v, v + w + 1, valeur));
-			} else if (colonne == w - 1) {
-				edges.add(new Edge(v, v + w - 1, valeur));
-			} else {
-				edges.add(new Edge(v, v + w + 1, valeur));
-				edges.add(new Edge(v, v + w - 1, valeur));
-			}
-
+		// Cas dans lequel on se trouve dans la dernière ligne
+		}else if(ligne == h-1){
+			edges.add(new Edge(v,w*h+1,interest[ligne][colonne]));
 		}
 	    return edges;
 	}
 
    	public Iterable<Edge> prev(int v){
 		// Variables
-	    ArrayList<Edge> edges = new ArrayList();
-		int ligne, colonne, valeur;
+	    ArrayList<Edge> edges = new ArrayList<Edge>();
+		int ligne, colonne;
 		// Position dans le tableau
-		ligne = v/w-1;
-		colonne = v%w;
+		if(v != 0) {
+			ligne = (v-1)/w;
+			colonne = v - (ligne * w + 1);
+		}else{
+			ligne = 0;
+			colonne = 0;
+		}
+		// Récupération des arêtes si le sommet ne fait pas parti de la première ligne
+		if(ligne > 1) {
+			// Dans le cas où v est le dernier sommet
+			if (ligne == h) {
+				for (int i = 0; i < w; i++) {
+					// On lie ensuite les sommets au sommet de fin
+					edges.add(new Edge(v-(w-i), v, interest[h - 1][i]));
+				}
+				// Pour les autres sommets
+			} else{
+				edges.add(new Edge(v - w, v, interest[ligne-1][colonne]));
 
-		// Récupération des arêtes
-
-		// Dans le cas où v est le dernier sommet
-		if(v == w*h){
-			for(int i = 0 ; i < w ; i++){
-				// On lie ensuite les sommets au sommet de fin
-				edges.add(new Edge(v, w*h+1, interest[h-1][i]));
+				if (colonne == 0) {
+					edges.add(new Edge(v - w + 1, v, interest[ligne-1][colonne+1]));
+				} else if (colonne == w - 1) {
+					edges.add(new Edge(v - w - 1, v, interest[ligne-1][colonne-1]));
+				} else {
+					edges.add(new Edge(v - w + 1, v, interest[ligne-1][colonne+1]));
+					edges.add(new Edge(v - w - 1, v, interest[ligne-1][colonne-1]));
+				}
 			}
-		// Pour les autres sommets
-		}else if(v != w*h){
-			valeur = interest[ligne][colonne];;
-			edges.add(new Edge(v, v - w, valeur));
-			if (colonne == 0) {
-				edges.add(new Edge(v, v - w + 1, valeur));
-			} else if (colonne == w - 1) {
-				edges.add(new Edge(v, v - w - 1, valeur));
-			} else {
-				edges.add(new Edge(v, v - w + 1, valeur));
-				edges.add(new Edge(v, v - w - 1, valeur));
-			}
-
+		// Dans le cas de la première ligne
+		}else if(ligne == 1){
+			edges.add(new Edge(0, v,0));
 		}
 	    return edges;
 	}

@@ -10,7 +10,8 @@ public class Simple extends Algo {
     @Override
     public Graph executer(int[][] img) {
         int[][] itr = SeamCarving.interest(img);
-
-        return SeamCarving.tograph(itr);
+        Graph g = SeamCarving.tograph(itr);
+        g.writeFile("graph.dot");
+        return g;
     }
 }

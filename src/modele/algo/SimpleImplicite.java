@@ -1,11 +1,15 @@
 package modele.algo;
 
+import modele.SeamCarving;
 import modele.graph.Graph;
 import modele.graph.GraphImplicit;
 
 public class SimpleImplicite extends Algo{
     @Override
     public Graph executer(int[][] img) {
-        return new GraphImplicit(img,img[0].length,img.length);
+        int[][] itr = SeamCarving.interest(img);
+        Graph g = new GraphImplicit(itr,itr[0].length,itr.length);
+        g.writeFile("graph.dot");
+        return g;
     }
 }
